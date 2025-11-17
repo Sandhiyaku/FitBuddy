@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FitBuddy Login</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
+.container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 350px; }
+h2 { text-align: center; margin-bottom: 20px; }
+input, select, button { width: 100%; padding: 10px; margin: 5px 0 15px 0; border-radius: 5px; border: 1px solid #ccc; }
+button { background: #007bff; color: white; border: none; cursor: pointer; }
+button:hover { background: #0056b3; }
+p { text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Login</h2>
+
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <select id="role">
+      <option value="coach">Coach</option>
+      <option value="client">Client</option>
+    </select>
+    <button type="submit">Login</button>
+  </form>
+
+  <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, role })
+        });
+        const data = await response.json();
+
+        if(response.status === 200){
+            // Store token and user info
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('name', data.name);
+
+            // Redirect based on role
+            if(data.role === 'coach'){
+                window.location.href = '/pages/coach_dashboard.html';
+            } else {
+                window.location.href = '/pages/client_dashboard.html';
+            }
+        } else {
+            alert(data.message || "Login failed");
+        }
+    } catch (err) {
+        alert('Error connecting to server.');
+        console.error(err);
+    }
+});
+</script>
+</body>
+</html>

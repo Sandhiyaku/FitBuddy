@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Nutrition Plan</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h2 { text-align: center; margin-bottom: 20px; }
+label { font-weight: bold; display: block; margin-top: 15px; }
+input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+button { margin-top: 20px; padding: 12px; background: #007BFF; color: white; border: none; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; }
+button:hover { background: #0056b3; }
+.btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007BFF; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="/pages/coach_dashboard.html" class="btn-back">← Back to Dashboard</a>
+    <h2>Create Nutrition Plan</h2>
+
+    <label>Client ID</label>
+    <input type="number" id="clientId" placeholder="Enter Client ID">
+
+    <label>Breakfast</label>
+    <textarea id="breakfast" rows="2" placeholder="Enter breakfast plan"></textarea>
+
+    <label>Lunch</label>
+    <textarea id="lunch" rows="2" placeholder="Enter lunch plan"></textarea>
+
+    <label>Dinner</label>
+    <textarea id="dinner" rows="2" placeholder="Enter dinner plan"></textarea>
+
+    <label>Snacks</label>
+    <textarea id="snacks" rows="2" placeholder="Enter snacks plan"></textarea>
+
+    <button onclick="submitNutritionPlan()">Submit Nutrition Plan</button>
+</div>
+
+<script>
+async function submitNutritionPlan() {
+    const clientId = document.getElementById("clientId").value.trim();
+    const breakfast = document.getElementById("breakfast").value.trim();
+    const lunch = document.getElementById("lunch").value.trim();
+    const dinner = document.getElementById("dinner").value.trim();
+    const snacks = document.getElementById("snacks").value.trim();
+
+    if(!clientId) { alert("Please enter a Client ID"); return; }
+
+    try {
+        const response = await fetch('/coach/add_nutrition_plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ client_id: clientId, breakfast, lunch, dinner, snacks })
+        });
+        const data = await response.json();
+        alert(data.message);
+        if(response.status === 201){
+            document.getElementById("clientId").value = '';
+            document.getElementById("breakfast").value = '';
+            document.getElementById("lunch").value = '';
+            document.getElementById("dinner").value = '';
+            document.getElementById("snacks").value = '';
+        }
+    } catch(err) {
+        alert("Error connecting to server.");
+        console.error(err);
+    }
+}
+</script>
+</body>
+</html>

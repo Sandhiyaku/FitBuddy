@@ -50,7 +50,12 @@ app.register_blueprint(client_bp, url_prefix='/client')
 # --------------------------
 # Run the App
 # --------------------------
+# if __name__ == "__main__":
+#     with app.app_context():
+#         db.create_all()  # Create database tables if not exist
+#     app.run(debug=True)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Create database tables if not exist
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Use Railway port or default 5000
+    app.run(host="0.0.0.0", port=port)

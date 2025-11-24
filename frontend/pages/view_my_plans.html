@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>View My Plans</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0;}
+.container { width:90%; max-width:700px; margin:50px auto; background:#fff; padding:25px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+h1 { text-align:center; color:#333;}
+.btn-back { display:inline-block; margin-bottom:20px; text-decoration:none; color:#007BFF; }
+#plans { margin-top:20px; white-space: pre-wrap; }
+pre { background: #eee; padding: 10px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="/pages/client_dashboard.html" class="btn-back">← Back to Dashboard</a>
+    <h1>My Plans</h1>
+    <div id="plans">Loading...</div>
+</div>
+
+<script>
+async function loadPlans(){
+    const token = localStorage.getItem("token");
+    if(!token){
+        alert("Please login");
+        window.location.href="/pages/login.html";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/client/view_my_plans", {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        const plansDiv = document.getElementById("plans");
+        if(data.success && data.plans.length > 0){
+            const plan = data.plans[0];
+            plansDiv.innerHTML = `
+                <h3>Coach: ${plan.coach_name}</h3>
+                <b>Workout Plan:</b> <pre>${JSON.stringify(plan.workout_plan, null, 2)}</pre>
+                <b>Nutrition Plan:</b> <pre>${JSON.stringify(plan.nutrition_plan, null, 2)}</pre>
+            `;
+        } else {
+            plansDiv.innerHTML = data.message || "No plans found.";
+        }
+    } catch (error) {
+        document.getElementById("plans").innerHTML = "Failed to load plans. Please try again later.";
+        console.error("Error loading plans:", error);
+    }
+}
+
+window.onload = loadPlans;
+</script>
+</body>
+</html>

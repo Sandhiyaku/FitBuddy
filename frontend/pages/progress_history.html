@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Progress History</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+.container { width: 90%; max-width: 800px; margin: 50px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+h1 { text-align: center; }
+.btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #007bff; }
+.btn-back:hover { text-decoration: underline; }
+.entry { margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #f9f9f9; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="/pages/client_dashboard.html" class="btn-back">← Back to Dashboard</a>
+    <h1>Progress History</h1>
+    <div id="historyContainer"></div>
+</div>
+
+<script>
+async function loadHistory() {
+    const token = localStorage.getItem("token");
+    if(!token){ alert("Please login"); window.location.href="/pages/login.html"; return; }
+
+    const response = await fetch("http://127.0.0.1:5000/client/progress_history", {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const data = await response.json();
+    const container = document.getElementById("historyContainer");
+    container.innerHTML = "";
+
+    if(data.success && data.history.length>0){
+        data.history.forEach(log => {
+            const div = document.createElement("div");
+            div.classList.add("entry");
+            div.innerHTML = `
+                <b>Date:</b> ${log.date}<br>
+                <b>Workout:</b> ${log.workout}<br>
+                <b>Measurements:</b> ${log.measurements}<br>
+                <b>Photos:</b> ${log.photos || "N/A"}
+            `;
+            container.appendChild(div);
+        });
+    } else {
+        container.innerHTML = "<p>No progress history found.</p>";
+    }
+}
+
+loadHistory();
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Coach Dashboard</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+h1 { color: #333; }
+.btn {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 16px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn:hover { background: #0056b3; }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Coach Dashboard</h1>
+    <p>Welcome, Coach!</p>
+
+    <a class="btn" href="/pages/add_client.html">➕ Add Client</a>
+    <a class="btn" href="/pages/view_clients.html">👥 View Clients</a>
+    <a class="btn" href="/pages/create_nutrition.html">🥗 Create Nutrition Plan</a>
+    <a class="btn" href="/pages/view_plans.html">📄 View All Plans</a>
+
+    <button class="btn" onclick="window.location.href='/pages/add_workout_plan.html'">🏋️ Create Workout Plan</button>
+    <button class="btn" onclick="logout()">Logout</button>
+</div>
+
+<script>
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/pages/login.html";
+}
+</script>
+</body>
+</html>

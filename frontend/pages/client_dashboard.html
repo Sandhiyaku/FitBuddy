@@ -1,188 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>Client Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 600px;
-      margin: 50px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      text-decoration: none;
-    }
-
-    .btn:hover {
-      background: #0056b3;
-    }
-
-    #output {
-      margin-top: 20px;
-      text-align: left;
-      white-space: pre-wrap;
-    }
-
-    pre {
-      background: #eee;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Client Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+  .container {
+    width: 90%; max-width: 600px; margin: 50px auto; background: #fff;
+    padding: 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;
+  }
+  h1 { color: #333; }
+  .btn {
+    display: block; width: 100%; margin: 10px 0; padding: 12px; font-size: 16px;
+    background: #007bff; color: #fff; border: none; border-radius: 6px; cursor: pointer; text-decoration: none;
+  }
+  .btn:hover { background: #0056b3; }
+  #output { margin-top: 20px; text-align: left; white-space: pre-wrap; }
+  pre { background: #eee; padding: 10px; border-radius: 6px; }
+</style>
 </head>
-
 <body>
 
-  <div class="container">
-    <h1>Client Dashboard</h1>
-    <p>Welcome, Client!</p>
+<div class="container">
+  <h1>Client Dashboard</h1>
+  <p>Welcome, Client!</p>
 
-    <button class="btn" onclick="viewMyPlans()">📄 View My Plans</button>
-    <button class="btn" onclick="logProgress()">📝 Log Progress</button>
-    <button class="btn" onclick="viewProgressHistory()">📊 Progress History</button>
-    <button class="btn" onclick="logout()">Logout</button>
+  <button class="btn" onclick="viewMyPlans()">📄 View My Plans</button>
+  <button class="btn" onclick="logProgress()">📝 Log Progress</button>
+  <button class="btn" onclick="viewProgressHistory()">📊 Progress History</button>
+  <button class="btn" onclick="logout()">Logout</button>
 
-    <div id="output"></div>
-  </div>
+  <div id="output"></div>
+</div>
 
-  <script>
-    // Logout: remove token and redirect to login
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "/pages/login.html";
-    }
+<script>
+// Logout: remove token and redirect to login
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "/pages/login.html";
+}
 
-    // View My Plans
-    async function viewMyPlans() {
-      const token = localStorage.getItem("token");
-      if (!token) { alert("Please login"); return; }
+// View My Plans
+async function viewMyPlans() {
+  const token = localStorage.getItem("token");
+  if (!token) { alert("Please login"); return; }
 
-      document.getElementById("output").textContent = "Loading plans...";
+  document.getElementById("output").textContent = "Loading plans...";
 
-      try {
-        const res = await fetch("/client/view_my_plans", {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-            "Access-Control-Allow-Origin": "*"
-          }
-        });
+  try {
+    const res = await fetch("http://127.0.0.1:5000/client/view_my_plans", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if (data.success && data.plans.length > 0) {
-          const plan = data.plans[0];
-          document.getElementById("output").innerHTML = `
+    if (data.success && data.plans.length > 0) {
+      const plan = data.plans[0];
+      document.getElementById("output").innerHTML = `
         <h3>Coach: ${plan.coach_name}</h3>
         <h4>Workout Plan:</h4><pre>${JSON.stringify(plan.workout_plan, null, 2)}</pre>
         <h4>Nutrition Plan:</h4><pre>${JSON.stringify(plan.nutrition_plan, null, 2)}</pre>
       `;
-        } else {
-          document.getElementById("output").textContent = data.message || "No plans found.";
-        }
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("output").textContent = "Error loading plans.";
-      }
+    } else {
+      document.getElementById("output").textContent = data.message || "No plans found.";
     }
 
-    // View Progress History
-    async function viewProgressHistory() {
-      const token = localStorage.getItem("token");
-      console.log("JWT Token:", token);
-      if (!token) { alert("Please login"); return; }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("output").textContent = "Error loading plans.";
+  }
+}
 
-      document.getElementById("output").textContent = "Loading progress history...";
-      try {
-        const res = await fetch("/client/progress_history", {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        const data = await res.json();
+// View Progress History
+async function viewProgressHistory() {
+  const token = localStorage.getItem("token");
+  console.log("JWT Token:", token);
+  if (!token) { alert("Please login"); return; }
 
-        if (data.success && data.history.length > 0) {
-          let html = "<h3>Progress History:</h3>";
-          data.history.forEach(log => {
-            html += `<b>${log.date}</b><br>Workout: ${log.workout}<br>Measurements: ${log.measurements}<br>Photos: ${log.photos}<hr>`;
-          });
-          document.getElementById("output").innerHTML = html;
-        } else {
-          document.getElementById("output").textContent = "No progress history found.";
-        }
-      } catch (err) {
-        document.getElementById("output").textContent = "Error loading progress history.";
-        console.error(err);
-      }
+  document.getElementById("output").textContent = "Loading progress history...";
+  try {
+    const res = await fetch("http://127.0.0.1:5000/client/progress_history", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    const data = await res.json();
+
+    if (data.success && data.history.length > 0) {
+      let html = "<h3>Progress History:</h3>";
+      data.history.forEach(log => {
+        html += `<b>${log.date}</b><br>Workout: ${log.workout}<br>Measurements: ${log.measurements}<br>Photos: ${log.photos}<hr>`;
+      });
+      document.getElementById("output").innerHTML = html;
+    } else {
+      document.getElementById("output").textContent = "No progress history found.";
     }
-    async function logProgress() {
-      const token = localStorage.getItem("token");
-      if (!token) { alert("Please login"); return; }
+  } catch (err) {
+    document.getElementById("output").textContent = "Error loading progress history.";
+    console.error(err);
+  }
+}
+async function logProgress() {
+    const token = localStorage.getItem("token");
+    if(!token){ alert("Please login"); return; }
 
-      const workout = prompt("Enter workout done today:");
-      const measurements = prompt("Enter measurements (weight, waist, etc.):");
-      const photos = prompt("Enter photo URL (optional):");
+    const workout = prompt("Enter workout done today:");
+    const measurements = prompt("Enter measurements (weight, waist, etc.):");
+    const photos = prompt("Enter photo URL (optional):");
 
-      if (!workout && !measurements && !photos) {
+    if(!workout && !measurements && !photos){
         alert("Nothing to log!");
         return;
-      }
+    }
 
-      fetch("/client/log_progress", {
+    fetch("http://127.0.0.1:5000/client/log_progress", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+        headers: { 
+            "Content-Type":"application/json", 
+            "Authorization": `Bearer ${token}` 
         },
         body: JSON.stringify({ workout, measurements, photos })
-      })
-        .then(res => res.json())
-        .then(data => alert(data.message || "Progress logged successfully!"))
-        .catch(err => alert("Error logging progress."));
-    }
-    async function viewProgressHistory() {
-      const token = localStorage.getItem("token");
-      if (!token) { alert("Please login"); return; }
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message || "Progress logged successfully!"))
+    .catch(err => alert("Error logging progress."));
+}
+async function viewProgressHistory() {
+    const token = localStorage.getItem("token");
+    if(!token){ alert("Please login"); return; }
 
-      const response = await fetch("http://127.0.0.1:5000/client/progress_history", {
+    const response = await fetch("http://127.0.0.1:5000/client/progress_history", {
         headers: { "Authorization": `Bearer ${token}` }
-      });
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success && data.history.length > 0) {
+    if(data.success && data.history.length > 0){
         let html = "<h3>Progress History:</h3>";
         data.history.forEach(log => {
-          html += `
+            html += `
                 <b>${log.date}</b><br>
                 Workout: ${log.workout}<br>
                 Measurements: ${log.measurements}<br>
@@ -190,13 +150,12 @@
             `;
         });
         document.getElementById("output").innerHTML = html;
-      } else {
+    } else {
         document.getElementById("output").innerHTML = "No progress history found.";
-      }
     }
+}
 
-  </script>
+</script>
 
 </body>
-
 </html>

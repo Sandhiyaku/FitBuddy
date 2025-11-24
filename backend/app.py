@@ -23,6 +23,11 @@ app = Flask(
 # --------------------------
 PAGES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend/pages"))
 
+@app.route("/")
+def index():
+    """Redirect root to login page"""
+    return send_from_directory(PAGES_DIR, "login.html")
+
 @app.route("/pages/<path:filename>")
 def serve_page(filename):
     """Serve HTML pages from frontend/pages folder"""

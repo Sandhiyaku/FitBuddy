@@ -34,7 +34,7 @@ document.getElementById('clientRole').textContent = role;
 
 async function loadPlan(){
   try {
-    const res = await fetch('http://127.0.0.1:5000/client/plan', {
+    const res = await fetch('/client/plan', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await res.json();

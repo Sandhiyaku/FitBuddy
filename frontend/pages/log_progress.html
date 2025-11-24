@@ -41,7 +41,7 @@ async function submitProgress() {
     const measurements = document.getElementById("measurements").value;
     const photo = document.getElementById("photo").value;
 
-    const response = await fetch("http://127.0.0.1:5000/client/log_progress", {
+    const response = await fetch("/client/log_progress", {
         method: "POST",
         headers: { "Content-Type":"application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ workout, measurements, photo })

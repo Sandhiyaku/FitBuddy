@@ -24,7 +24,7 @@ async function loadHistory() {
     const token = localStorage.getItem("token");
     if(!token){ alert("Please login"); window.location.href="/pages/login.html"; return; }
 
-    const response = await fetch("http://127.0.0.1:5000/client/progress_history", {
+    const response = await fetch("/client/progress_history", {
         headers: { "Authorization": `Bearer ${token}` }
     });
 

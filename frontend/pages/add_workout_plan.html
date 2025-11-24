@@ -92,7 +92,7 @@ async function submitPlan() {
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/coach/add_workout_plan", {
+        const response = await fetch("/coach/add_workout_plan", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ client_id: clientId, warmup, workout, cooldown })

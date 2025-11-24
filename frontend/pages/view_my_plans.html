@@ -29,7 +29,7 @@ async function loadPlans(){
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/client/view_my_plans", {
+        const response = await fetch("/client/view_my_plans", {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
         });

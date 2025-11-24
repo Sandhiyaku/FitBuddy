@@ -48,7 +48,7 @@ async function viewMyPlans() {
   document.getElementById("output").textContent = "Loading plans...";
 
   try {
-    const res = await fetch("http://127.0.0.1:5000/client/view_my_plans", {
+    const res = await fetch("/client/view_my_plans", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -85,7 +85,7 @@ async function viewProgressHistory() {
 
   document.getElementById("output").textContent = "Loading progress history...";
   try {
-    const res = await fetch("http://127.0.0.1:5000/client/progress_history", {
+    const res = await fetch("/client/progress_history", {
       headers: { "Authorization": `Bearer ${token}` }
     });
     const data = await res.json();
@@ -117,7 +117,7 @@ async function logProgress() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/client/log_progress", {
+    fetch("/client/log_progress", {
         method: "POST",
         headers: { 
             "Content-Type":"application/json", 
@@ -133,7 +133,7 @@ async function viewProgressHistory() {
     const token = localStorage.getItem("token");
     if(!token){ alert("Please login"); return; }
 
-    const response = await fetch("http://127.0.0.1:5000/client/progress_history", {
+    const response = await fetch("/client/progress_history", {
         headers: { "Authorization": `Bearer ${token}` }
     });
 
